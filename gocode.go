@@ -79,6 +79,6 @@ func main() {
 	root := http.HandlerFunc(templatePageHandler)
 	http.HandleFunc("/", root)
 
-	fmt.Println("Server: http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println("Server: http://localhost:8000")
+	log.Fatal(http.ListenAndServe(":8000", nil))
 }
