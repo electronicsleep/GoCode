@@ -1,0 +1,19 @@
+body {
+  padding-top: 50px;
+  text-align : center;
+}
+
+.template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+a.block:before {
+  display: block;
+  content: " ";
+  padding-top 100px;
+  margin-top: -100px;
+  height: 100px;
+  visibility: hidden;
+  pointer-events: none;
+}
