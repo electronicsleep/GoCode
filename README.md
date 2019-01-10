@@ -1,3 +1,3 @@
 # GoCode
 
-Code Colaboration
+Code Collaboration
