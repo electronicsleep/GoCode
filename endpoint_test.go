@@ -9,7 +9,7 @@ import (
 )
 
 func TestEndpointsCheckHandler(t *testing.T) {
-	endpoint_list := []string{"/create", "/"}
+	endpoint_list := []string{"/"}
 	for _, endpoint := range endpoint_list {
 		fmt.Println("endpoint: ", endpoint)
 		req, err := http.NewRequest("GET", endpoint, nil)

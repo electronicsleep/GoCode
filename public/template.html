@@ -44,9 +44,11 @@
 
        <hr>
        <p><a href="https://github.com/electronicsleep/GoCode" target="_blank">
-       <img src="public/images/linux.png" width="50"></a>
+       <img src="public/images/Linux.png" width="50"></a>
 
-       {{.Time}}
+       {{if .Code}}
+           Saved: {{.Time}}
+       {{end}}
 
       </div>
 

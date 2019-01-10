@@ -34,6 +34,8 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	handleError("parse form error:", err)
 	code := r.Form.Get("code")
+	log.Println("-----> Code\n", code, "\n")
+	log.Println("-----> End")
 
 	log.Println("Page template ", r.URL.Path)
 	ParseErr := r.ParseForm()
