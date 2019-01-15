@@ -30,6 +30,7 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 	tm := t.Format("20060102")
 
 	tmpl := template.Must(template.ParseFiles("public/template.html"))
+	save := ""
 
 	type TmplPageData struct {
 		Links template.HTML
@@ -42,24 +43,28 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	handleError("parse form error:", err)
 	code := r.Form.Get("code")
-	log.Println("-----> Code")
+	if code == "" {
+		log.Println("-----> Start")
+	} else {
+		log.Println("-----> Code")
 
-	filename := randString(25)
-	save := "public/" + filename + "-" + tm + ".txt"
-	filename = "public/" + filename + "-" + tm + ".txt"
-	log.Println("save: " + save)
+		filename := randString(25)
+		save := "public/" + filename + "-" + tm + ".txt"
+		filename = "public/" + filename + "-" + tm + ".txt"
+		log.Println("save: " + save)
 
-	saveBytes := []byte(code)
-	saveErr := ioutil.WriteFile(filename, saveBytes, 0644)
-	handleError("file save error: ", saveErr)
+		saveBytes := []byte(code)
+		saveErr := ioutil.WriteFile(filename, saveBytes, 0644)
+		handleError("file save error: ", saveErr)
 
-	var lines []string = strings.Split(code, "\n")
-	for index, line := range lines {
-		i := strconv.Itoa(index + 1)
-		log.Println("Line "+i+": ", line)
+		var lines []string = strings.Split(code, "\n")
+		for index, line := range lines {
+			i := strconv.Itoa(index + 1)
+			log.Println("Line "+i+": ", line)
+		}
+
+		log.Println("-----> End")
 	}
-
-	log.Println("-----> End")
 
 	ParseErr := r.ParseForm()
 	handleError("Read template file", ParseErr)
