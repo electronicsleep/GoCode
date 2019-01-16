@@ -28,9 +28,9 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 
 	t := time.Now()
 	tm := t.Format("20060102")
+	savefile := ""
 
 	tmpl := template.Must(template.ParseFiles("public/template.html"))
-	save := ""
 
 	type TmplPageData struct {
 		Links template.HTML
@@ -45,16 +45,16 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 	code := r.Form.Get("code")
 	if code == "" {
 		log.Println("-----> Start")
+		savefile = "NA"
 	} else {
 		log.Println("-----> Code")
 
 		filename := randString(25)
-		save := "public/" + filename + "-" + tm + ".txt"
-		filename = "public/" + filename + "-" + tm + ".txt"
-		log.Println("save: " + save)
+		savefile = "public/code/" + filename + "-" + tm + ".txt"
+		log.Println("save: " + savefile)
 
 		saveBytes := []byte(code)
-		saveErr := ioutil.WriteFile(filename, saveBytes, 0644)
+		saveErr := ioutil.WriteFile(savefile, saveBytes, 0644)
 		handleError("file save error: ", saveErr)
 
 		var lines []string = strings.Split(code, "\n")
@@ -90,7 +90,7 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 		data := TmplPageData{
 			Links: headerLinks,
 			Body:  body,
-			Save:  save,
+			Save:  savefile,
 			Code:  code,
 			Time:  rfc_time,
 		}
