@@ -19,10 +19,10 @@ a.block:before {
 }
 
 textarea {
-    background-image: url("../images/line_numbers.png");
-    background-attachment: local;
-    background-repeat: no-repeat;
-    padding-left: 35px;
-    padding-top: 10px;
-    border-color:#ccc;
+  background-image: url("../images/line_numbers.png");
+  background-attachment: local;
+  background-repeat: no-repeat;
+  padding-left: 35px;
+  padding-top: 10px;
+  border-color:#ccc;
 }
