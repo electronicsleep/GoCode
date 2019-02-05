@@ -26,7 +26,6 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-{{.Links}}
           </ul>
         </div>
       </div>
@@ -36,7 +35,7 @@
 
       <div class="template">
 
-       <h1>GoCode</h1>
+       <h2>Online Code Collaboration</h2>
        <form action="/" method="post">
         <textarea name="code" rows="10" cols="50">{{if .Code}}{{.Code}}{{else}}# Author: {{end}}</textarea>
         <p><input type="submit" value="Save">
