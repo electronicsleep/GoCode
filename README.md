@@ -1,5 +1,5 @@
 # GoCode
 
-Code Collaboration
+Online Code Collaboration
 
 Try: http://chrisgr.com:8000
