@@ -33,16 +33,19 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("public/template.html"))
 
 	type TmplPageData struct {
-		Links template.HTML
-		Body  template.HTML
-		Save  string
-		Code  string
-		Time  string
+		Header template.HTML
+		Links  template.HTML
+		Body   template.HTML
+		Footer template.HTML
+		Save   string
+		Code   string
+		Time   string
 	}
 
 	err := r.ParseForm()
 	handleError("parse form error:", err)
 	code := r.Form.Get("code")
+	public := r.Form.Get("public")
 	if code == "" {
 		log.Println("-----> Start")
 		savefile = "NA"
@@ -50,7 +53,10 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("-----> Code")
 
 		filename := randString(25)
-		savefile = "public/code/" + filename + "-" + tm + ".txt"
+		if public == "public" {
+			public = "-" + public
+		}
+		savefile = "public/code/" + filename + "-" + tm + public + ".txt"
 		log.Println("save: " + savefile)
 
 		saveBytes := []byte(code)
@@ -81,18 +87,28 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 		bodyString, rferr := ioutil.ReadFile(file)
 		handleError("read page file", rferr)
 
-		headerLinksString, rferr2 := ioutil.ReadFile("public/header_links.html")
+		headerString, rferr2 := ioutil.ReadFile("public/header.html")
 		handleError("read header file", rferr2)
 
+		headerLinksString, rferr3 := ioutil.ReadFile("public/header_links.html")
+		handleError("read header links file", rferr3)
+
+		footerString, rferr3 := ioutil.ReadFile("public/footer.html")
+		handleError("read footer file", rferr3)
+
+		header := template.HTML(string(headerString))
 		headerLinks := template.HTML(string(headerLinksString))
 		body := template.HTML(string(bodyString))
+		footer := template.HTML(string(footerString))
 
 		data := TmplPageData{
-			Links: headerLinks,
-			Body:  body,
-			Save:  savefile,
-			Code:  code,
-			Time:  rfc_time,
+			Header: header,
+			Links:  headerLinks,
+			Body:   body,
+			Footer: footer,
+			Save:   savefile,
+			Code:   code,
+			Time:   rfc_time,
 		}
 
 		tmpl_err := tmpl.Execute(w, data)
@@ -100,6 +116,97 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Fprintf(w, "404")
 	}
+}
+
+func templateHandlerAbout(w http.ResponseWriter, r *http.Request) {
+	log.Println("About endpoint: ", r.URL.Path)
+
+	tmpl := template.Must(template.ParseFiles("public/about.html"))
+	type TmplPageData struct {
+		Header template.HTML
+		Links  template.HTML
+		Footer template.HTML
+	}
+
+	headerString, rferr2 := ioutil.ReadFile("public/header.html")
+	handleError("read header file", rferr2)
+
+	headerLinksString, rferr3 := ioutil.ReadFile("public/header_links.html")
+	handleError("read header links file", rferr3)
+
+	footerString, rferr3 := ioutil.ReadFile("public/footer.html")
+	handleError("read footer file", rferr3)
+
+	header := template.HTML(string(headerString))
+	headerLinks := template.HTML(string(headerLinksString))
+	footer := template.HTML(string(footerString))
+
+	data := TmplPageData{
+		Header: header,
+		Links:  headerLinks,
+		Footer: footer,
+	}
+
+	tmpl_err := tmpl.Execute(w, data)
+	handleError("template execute error:", tmpl_err)
+}
+
+func templateHandlerHistory(w http.ResponseWriter, r *http.Request) {
+	log.Println("---> History endpoint: ", r.URL.Path)
+
+	files, readErr := ioutil.ReadDir("public/code/")
+	if readErr != nil {
+		log.Fatal(readErr)
+	}
+
+	codeFiles := ""
+	for _, f := range files {
+		if f.Name() != "README.md" {
+			if strings.Contains(f.Name(), "-public") {
+
+				log.Println(f.Name())
+				codeFiles += "<p><a href=public/code/"
+				codeFiles += f.Name()
+				codeFiles += " target=_blank>"
+				codeFiles += f.Name()
+				codeFiles += "</a>"
+				codeFiles += "\n"
+			}
+		}
+	}
+
+	tmpl := template.Must(template.ParseFiles("public/history.html"))
+	type TmplPageData struct {
+		Header template.HTML
+		Links  template.HTML
+		Footer template.HTML
+		Files  template.HTML
+	}
+
+	headerString, rferr2 := ioutil.ReadFile("public/header.html")
+	handleError("read header file", rferr2)
+
+	headerLinksString, rferr3 := ioutil.ReadFile("public/header_links.html")
+	handleError("read header links file", rferr3)
+
+	footerString, rferr3 := ioutil.ReadFile("public/footer.html")
+	handleError("read footer file", rferr3)
+
+	header := template.HTML(string(headerString))
+	headerLinks := template.HTML(string(headerLinksString))
+	footer := template.HTML(string(footerString))
+
+	Code := template.HTML(string(codeFiles))
+
+	data := TmplPageData{
+		Header: header,
+		Links:  headerLinks,
+		Footer: footer,
+		Files:  Code,
+	}
+
+	tmpl_err := tmpl.Execute(w, data)
+	handleError("template execute error:", tmpl_err)
 }
 
 func randString(l int) string {
@@ -126,6 +233,12 @@ func main() {
 
 	root := http.HandlerFunc(templatePageHandler)
 	http.HandleFunc("/", root)
+
+	about := http.HandlerFunc(templateHandlerAbout)
+	http.HandleFunc("/about", about)
+
+	history := http.HandlerFunc(templateHandlerHistory)
+	http.HandleFunc("/history", history)
 
 	fmt.Println("Server: http://localhost:8000")
 	log.Fatal(http.ListenAndServe(":8000", nil))
