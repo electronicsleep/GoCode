@@ -8,7 +8,6 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -21,7 +20,7 @@ func handleError(info string, err error) {
 	}
 }
 
-func templatePageHandler(w http.ResponseWriter, r *http.Request) {
+func templateHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Page endpoint: ", r.URL.Path)
 	rfc_time := time.Now().Format(time.RFC1123)
@@ -30,7 +29,7 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 	tm := t.Format("20060102")
 	savefile := ""
 
-	tmpl := template.Must(template.ParseFiles("public/template.html"))
+	tmpl := template.Must(template.ParseFiles("public/index.html"))
 
 	type TmplPageData struct {
 		Header template.HTML
@@ -82,40 +81,35 @@ func templatePageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	file := "public" + path + ".html"
 
-	if _, err := os.Stat(file); !os.IsNotExist(err) {
+	bodyString, rferr := ioutil.ReadFile(file)
+	handleError("read page file", rferr)
 
-		bodyString, rferr := ioutil.ReadFile(file)
-		handleError("read page file", rferr)
+	headerString, rferr2 := ioutil.ReadFile("public/header.html")
+	handleError("read header file", rferr2)
 
-		headerString, rferr2 := ioutil.ReadFile("public/header.html")
-		handleError("read header file", rferr2)
+	headerLinksString, rferr3 := ioutil.ReadFile("public/header_links.html")
+	handleError("read header links file", rferr3)
 
-		headerLinksString, rferr3 := ioutil.ReadFile("public/header_links.html")
-		handleError("read header links file", rferr3)
+	footerString, rferr3 := ioutil.ReadFile("public/footer.html")
+	handleError("read footer file", rferr3)
 
-		footerString, rferr3 := ioutil.ReadFile("public/footer.html")
-		handleError("read footer file", rferr3)
+	header := template.HTML(string(headerString))
+	headerLinks := template.HTML(string(headerLinksString))
+	body := template.HTML(string(bodyString))
+	footer := template.HTML(string(footerString))
 
-		header := template.HTML(string(headerString))
-		headerLinks := template.HTML(string(headerLinksString))
-		body := template.HTML(string(bodyString))
-		footer := template.HTML(string(footerString))
-
-		data := TmplPageData{
-			Header: header,
-			Links:  headerLinks,
-			Body:   body,
-			Footer: footer,
-			Save:   savefile,
-			Code:   code,
-			Time:   rfc_time,
-		}
-
-		tmpl_err := tmpl.Execute(w, data)
-		handleError("template execute error:", tmpl_err)
-	} else {
-		fmt.Fprintf(w, "404")
+	data := TmplPageData{
+		Header: header,
+		Links:  headerLinks,
+		Body:   body,
+		Footer: footer,
+		Save:   savefile,
+		Code:   code,
+		Time:   rfc_time,
 	}
+
+	tmpl_err := tmpl.Execute(w, data)
+	handleError("template execute error:", tmpl_err)
 }
 
 func templateHandlerAbout(w http.ResponseWriter, r *http.Request) {
@@ -231,8 +225,8 @@ func main() {
 	fs := http.FileServer(http.Dir("public"))
 	http.Handle("/public/", http.StripPrefix("/public/", fs))
 
-	root := http.HandlerFunc(templatePageHandler)
-	http.HandleFunc("/", root)
+	home_www := http.HandlerFunc(templateHandler)
+	http.HandleFunc("/", home_www)
 
 	about := http.HandlerFunc(templateHandlerAbout)
 	http.HandleFunc("/about", about)
