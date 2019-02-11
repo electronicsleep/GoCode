@@ -17,7 +17,7 @@ func TestEndpointsCheckHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 		rr := httptest.NewRecorder()
-		handler := http.HandlerFunc(templatePageHandler)
+		handler := http.HandlerFunc(templateHandler)
 		handler.ServeHTTP(rr, req)
 
 		if status := rr.Code; status != http.StatusOK {
