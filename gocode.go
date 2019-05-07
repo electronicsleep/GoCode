@@ -37,6 +37,7 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 		Body   template.HTML
 		Footer template.HTML
 		Save   string
+		Get    string
 		Code   string
 		Time   string
 	}
@@ -45,9 +46,21 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 	handleError("parse form error:", err)
 	code := r.Form.Get("code")
 	public := r.Form.Get("public")
-	if code == "" {
+	getfile := r.Form.Get("getfile")
+	log.Println("-----> Found getfile1")
+	log.Println(getfile)
+	if getfile != "" {
+		log.Println("-----> Found getfile")
+		log.Println(getfile)
+		file, err := ioutil.ReadFile("public/code/" + getfile)
+		handleError("error getting getfile", err)
+		code = string(file)
+		getfile = "?getfile=" + getfile
+
+	} else if code == "" {
 		log.Println("-----> Start")
 		savefile = "NA"
+
 	} else {
 		log.Println("-----> Code")
 
@@ -55,7 +68,9 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 		if public == "public" {
 			public = "-" + public
 		}
+		//static savefile
 		savefile = "public/code/" + filename + "-" + tm + public + ".txt"
+		getfile = "?getfile=" + filename + "-" + tm + public + ".txt"
 		log.Println("save: " + savefile)
 
 		saveBytes := []byte(code)
@@ -104,6 +119,7 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 		Body:   body,
 		Footer: footer,
 		Save:   savefile,
+		Get:    getfile,
 		Code:   code,
 		Time:   rfc_time,
 	}
