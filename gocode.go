@@ -47,7 +47,7 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 	code := r.Form.Get("code")
 	public := r.Form.Get("public")
 	getfile := r.Form.Get("getfile")
-	log.Println("-----> Found getfile1")
+	log.Println("-----> Info: getfile")
 	log.Println(getfile)
 	if getfile != "" {
 		log.Println("-----> Found getfile")
@@ -175,9 +175,9 @@ func templateHandlerHistory(w http.ResponseWriter, r *http.Request) {
 			if strings.Contains(f.Name(), "-public") {
 
 				log.Println(f.Name())
-				codeFiles += "<p><a href=public/code/"
+				codeFiles += "<p><a href=/index?getfile="
 				codeFiles += f.Name()
-				codeFiles += " target=_blank>"
+				codeFiles += ">"
 				codeFiles += f.Name()
 				codeFiles += "</a>"
 				codeFiles += "\n"
