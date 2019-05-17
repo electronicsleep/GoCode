@@ -175,7 +175,7 @@ func templateHandlerHistory(w http.ResponseWriter, r *http.Request) {
 			if strings.Contains(f.Name(), "-public") {
 
 				log.Println(f.Name())
-				codeFiles += "<p><a href=/index?getfile="
+				codeFiles += "<p><a href=/?getfile="
 				codeFiles += f.Name()
 				codeFiles += ">"
 				codeFiles += f.Name()
