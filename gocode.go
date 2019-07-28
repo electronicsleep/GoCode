@@ -26,7 +26,7 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 	rfc_time := time.Now().Format(time.RFC1123)
 
 	t := time.Now()
-	tm := t.Format("20060102")
+	tm := t.Format("20060102-150405")
 	savefile := ""
 
 	tmpl := template.Must(template.ParseFiles("public/index.html"))
@@ -68,8 +68,8 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 		if public == "public" {
 			public = "-" + public
 		}
-		//static savefile
-		savefile = "public/code/" + filename + "-" + tm + public + ".txt"
+
+		savefile = "public/code/" + tm + "-" + filename + public + ".txt"
 		getfile = "?getfile=" + filename + "-" + tm + public + ".txt"
 		log.Println("save: " + savefile)
 
