@@ -69,8 +69,9 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 			public = "-" + public
 		}
 
-		savefile = "public/code/" + tm + "-" + filename + public + ".txt"
-		getfile = "?getfile=" + filename + "-" + tm + public + ".txt"
+		codefile := filename + "-" + tm + public + ".txt"
+		savefile = "public/code/" + codefile
+		getfile = "?getfile=" + codefile
 		log.Println("save: " + savefile)
 
 		saveBytes := []byte(code)
