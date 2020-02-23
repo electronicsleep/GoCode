@@ -20,6 +20,10 @@ func handleError(info string, err error) {
 	}
 }
 
+func faviconHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "public/favicon.ico")
+}
+
 func templateHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Page endpoint: ", r.URL.Path)
@@ -250,6 +254,8 @@ func main() {
 
 	history := http.HandlerFunc(templateHandlerHistory)
 	http.HandleFunc("/history", history)
+
+	http.HandleFunc("/favicon.ico", faviconHandler)
 
 	fmt.Println("Server: http://localhost:8000")
 	log.Fatal(http.ListenAndServe(":8000", nil))
