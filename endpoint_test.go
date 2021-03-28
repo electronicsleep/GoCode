@@ -11,6 +11,7 @@ import (
 func TestRootEndpointsCheckHandler(t *testing.T) {
 	endpoint_array := [...]string{"/", "/about", "/history"}
 	check_array := [...]string{"GoCode", "About", "History"}
+	check_handlers := [...]http.HandlerFunc{templateHandler, templateHandlerAbout, templateHandlerHistory}
 	count := 0
 	expected := ""
 	for _, endpoint := range endpoint_array {
@@ -20,7 +21,7 @@ func TestRootEndpointsCheckHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 		rr := httptest.NewRecorder()
-		handler := http.HandlerFunc(templateHandler)
+		handler := http.HandlerFunc(check_handlers[count])
 		handler.ServeHTTP(rr, req)
 
 		if status := rr.Code; status != http.StatusOK {
@@ -29,7 +30,6 @@ func TestRootEndpointsCheckHandler(t *testing.T) {
 			fmt.Printf("handler returned correct status code: (%v : %v)\n", status, http.StatusOK)
 		}
 
-		fmt.Println("count: ", count)
 		expected = check_array[count]
 		fmt.Println("expected: ", expected)
 		if !strings.Contains(rr.Body.String(), expected) {
