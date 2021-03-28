@@ -8,9 +8,12 @@ import (
 	"testing"
 )
 
-func TestEndpointsCheckHandler(t *testing.T) {
-	endpoint_list := []string{"/"}
-	for _, endpoint := range endpoint_list {
+func TestRootEndpointsCheckHandler(t *testing.T) {
+	endpoint_array := [...]string{"/", "/about", "/history"}
+	check_array := [...]string{"GoCode", "About", "History"}
+	count := 0
+	expected := ""
+	for _, endpoint := range endpoint_array {
 		fmt.Println("endpoint: ", endpoint)
 		req, err := http.NewRequest("GET", endpoint, nil)
 		if err != nil {
@@ -26,12 +29,14 @@ func TestEndpointsCheckHandler(t *testing.T) {
 			fmt.Printf("handler returned correct status code: (%v : %v)\n", status, http.StatusOK)
 		}
 
-		expected := "GoCode"
+		fmt.Println("count: ", count)
+		expected = check_array[count]
+		fmt.Println("expected: ", expected)
 		if !strings.Contains(rr.Body.String(), expected) {
 			t.Errorf("handler did not find expected string body: (expected: %v, endpoint: %v)", expected, endpoint)
 		} else {
 			fmt.Printf("handler contained expected string: (expected: %v, endpoint: %v)\n", expected, endpoint)
 		}
+		count += 1
 	}
-
 }
