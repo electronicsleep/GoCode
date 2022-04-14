@@ -15,7 +15,7 @@ import (
 
 func handleError(info string, err error) {
 	if err != nil {
-		fmt.Println("info: ", info)
+		fmt.Println("ERROR: ", info)
 		panic(err)
 	}
 }
@@ -228,8 +228,8 @@ func randString(l int) string {
 	var result bytes.Buffer
 	var temp string
 	for i := 0; i < l; {
-		if string(randInt(65, 90)) != temp {
-			temp = string(randInt(65, 90))
+		if strconv.Itoa(randInt(65, 90)) != temp {
+			temp = strconv.Itoa(randInt(65, 90))
 			result.WriteString(temp)
 			i++
 		}
