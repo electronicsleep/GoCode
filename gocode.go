@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -56,7 +56,7 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 	if getfile != "" {
 		log.Println("-----> Found getfile")
 		log.Println(getfile)
-		file, err := ioutil.ReadFile("public/code/" + getfile)
+		file, err := os.ReadFile("public/code/" + getfile)
 		handleError("error getting getfile", err)
 		code = string(file)
 		getfile = "?getfile=" + getfile
@@ -79,7 +79,7 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("save: " + savefile)
 
 		saveBytes := []byte(code)
-		saveErr := ioutil.WriteFile(savefile, saveBytes, 0644)
+		saveErr := os.WriteFile(savefile, saveBytes, 0644)
 		handleError("file save error: ", saveErr)
 
 		var lines []string = strings.Split(code, "\n")
@@ -101,16 +101,16 @@ func templateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	file := "public" + path + ".html"
 
-	bodyString, rferr := ioutil.ReadFile(file)
+	bodyString, rferr := os.ReadFile(file)
 	handleError("read page file", rferr)
 
-	headerString, rferr2 := ioutil.ReadFile("public/header.html")
+	headerString, rferr2 := os.ReadFile("public/header.html")
 	handleError("read header file", rferr2)
 
-	headerLinksString, rferr3 := ioutil.ReadFile("public/header_links.html")
+	headerLinksString, rferr3 := os.ReadFile("public/header_links.html")
 	handleError("read header links file", rferr3)
 
-	footerString, rferr3 := ioutil.ReadFile("public/footer.html")
+	footerString, rferr3 := os.ReadFile("public/footer.html")
 	handleError("read footer file", rferr3)
 
 	header := template.HTML(string(headerString))
@@ -143,13 +143,13 @@ func templateHandlerAbout(w http.ResponseWriter, r *http.Request) {
 		Footer template.HTML
 	}
 
-	headerString, rferr2 := ioutil.ReadFile("public/header.html")
+	headerString, rferr2 := os.ReadFile("public/header.html")
 	handleError("read header file", rferr2)
 
-	headerLinksString, rferr3 := ioutil.ReadFile("public/header_links.html")
+	headerLinksString, rferr3 := os.ReadFile("public/header_links.html")
 	handleError("read header links file", rferr3)
 
-	footerString, rferr3 := ioutil.ReadFile("public/footer.html")
+	footerString, rferr3 := os.ReadFile("public/footer.html")
 	handleError("read footer file", rferr3)
 
 	header := template.HTML(string(headerString))
@@ -169,7 +169,7 @@ func templateHandlerAbout(w http.ResponseWriter, r *http.Request) {
 func templateHandlerHistory(w http.ResponseWriter, r *http.Request) {
 	log.Println("---> History endpoint: ", r.URL.Path)
 
-	files, readErr := ioutil.ReadDir("public/code/")
+	files, readErr := os.ReadDir("public/code/")
 	if readErr != nil {
 		log.Fatal(readErr)
 	}
@@ -198,13 +198,13 @@ func templateHandlerHistory(w http.ResponseWriter, r *http.Request) {
 		Files  template.HTML
 	}
 
-	headerString, rferr2 := ioutil.ReadFile("public/header.html")
+	headerString, rferr2 := os.ReadFile("public/header.html")
 	handleError("read header file", rferr2)
 
-	headerLinksString, rferr3 := ioutil.ReadFile("public/header_links.html")
+	headerLinksString, rferr3 := os.ReadFile("public/header_links.html")
 	handleError("read header links file", rferr3)
 
-	footerString, rferr3 := ioutil.ReadFile("public/footer.html")
+	footerString, rferr3 := os.ReadFile("public/footer.html")
 	handleError("read footer file", rferr3)
 
 	header := template.HTML(string(headerString))
