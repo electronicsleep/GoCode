@@ -5,7 +5,7 @@
 
       <div class="template">
 
-       <h4>GoCode - Code Collab</h4>
+       <h4>gocode</h4>
        <form action="/" method="post">
         <textarea name="code" rows="10" cols="50">{{if .Code}}{{.Code}}{{else}}// Author: {{end}}</textarea>
         <p>Public: <input type="checkbox" name="public" value="public">
@@ -13,8 +13,7 @@
        </form>
 
        <hr>
-       <p><a href="https://github.com/electronicsleep/GoCode" target="_blank">
-       <img src="public/images/Linux.png" width="50"></a>
+       <p><a href="https://github.com/electronicsleep/gocode" target="_blank">gocode</a>
 
        {{if .Code}}
            Share: <a href="{{.Get}}">Link</a>
